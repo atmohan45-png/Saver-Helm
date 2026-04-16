@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block header %}Safety Analytics{% endblock %}
+{% block subheader %}Trend analysis for temperature and gas levels{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 gap-8" id="charts-container">
+    <div class="col-span-full flex justify-center py-12" id="loading-charts">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    function loadCharts() {
+        fetch('/api/analytics-data')
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('charts-container');
+                const loader = document.getElementById('loading-charts');
+                if (loader) loader.remove();
+
+                if (Object.keys(data).length === 0) {
+                    container.innerHTML = '<div class="bg-white p-12 rounded-3xl text-center text-gray-400">No data available for charts.</div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                for (const hName in data) {
+                    const canvasId = `chart-${hName.replace(/\s+/g, '-')}`;
+                    const section = document.createElement('div');
+                    section.className = 'bg-white p-8 rounded-3xl shadow-sm border border-gray-100';
+                    section.innerHTML = `
+                        <h3 class="font-bold text-gray-700 mb-6 flex items-center gap-2">
+                             <i class="fas fa-chart-line text-blue-500"></i> ${hName} - 20min Trends
+                        </h3>
+                        <div class="h-64">
+                            <canvas id="${canvasId}"></canvas>
+                        </div>
+                    `;
+                    container.appendChild(section);
+
+                    new Chart(document.getElementById(canvasId), {
+                        type: 'line',
+                        data: {
+                            labels: data[hName].labels,
+                            datasets: [
+                                {
+                                    label: 'Gas (ppm)',
+                                    data: data[hName].gas,
+                                    borderColor: '#ef4444',
+                                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                    tension: 0.4,
+                                    fill: true,
+                                    yAxisID: 'y'
+                                },
+                                {
+                                    label: 'Temp (°C)',
+                                    data: data[hName].temp,
+                                    borderColor: '#3b82f6',
+                                    tension: 0.4,
+                                    yAxisID: 'y1'
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: { type: 'linear', display: true, position: 'left' },
+                                y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false } }
+                            }
+                        }
+                    });
+                }
+            });
+    }
+    loadCharts();
+</script>
+{% endblock %}

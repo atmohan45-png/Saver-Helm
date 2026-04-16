@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block header %}Dashboard Overview{% endblock %}
+{% block subheader %}Monitoring real-time safety data for all helmets{% endblock %}
+
+{% block content %}
+<div id="helmet-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="col-span-full flex justify-center py-12" id="loading-spinner">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+</div>
+
+<div id="gas-alert"
+    class="fixed bottom-8 right-8 bg-red-600 text-white p-6 rounded-2xl shadow-2xl transform translate-y-32 transition-transform duration-500 z-50 flex items-center gap-4">
+    <div class="bg-white/20 p-3 rounded-full animate-pulse">
+        <i class="fas fa-exclamation-triangle text-2xl"></i>
+    </div>
+    <div>
+        <h3 class="font-bold text-lg">HIGH GAS CONCENTRATION</h3>
+        <p class="text-sm opacity-90" id="alert-message">Safety breach detected! Evacuate area.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block auth_content %}
+<div class="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+    <div class="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden p-8">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-blue-600 mb-2">SafeLink</h1>
+            <p class="text-gray-500">Worker Safety Monitoring System</p>
+        </div>
+
+        <form method="POST">
+            <div class="mb-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-2" for="username">Username</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                        <i class="fas fa-user"></i>
+                    </span>
+                    <input
+                        class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-800"
+                        type="text" name="username" placeholder="admin" required>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <label class="block text-sm font-semibold text-gray-700 mb-2" for="password">Password</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    <input
+                        class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-800"
+                        type="password" name="password" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <button
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-200 transition-all duration-300 transform active:scale-95"
+                type="submit">
+                Sign In
+            </button>
+        </form>
+
+        <div class="mt-8 text-center text-sm text-gray-500">
+            Don't have an account? <a href="{{ url_for('auth.register') }}"
+                class="text-blue-600 font-bold hover:underline">Register now</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

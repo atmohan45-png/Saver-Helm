@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block header %}Emergency Protocols{% endblock %}
+{% block subheader %}Critical worker contact information and blood groups{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+    <table class="w-full text-left">
+        <thead class="bg-gray-50 border-b border-gray-100">
+            <tr>
+                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Worker Name</th>
+                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Blood Group</th>
+                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Emergency Contact</th>
+                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Device ID</th>
+                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Zone</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+            {% for helmet in helmets %}
+            <tr class="hover:bg-red-50/30 transition-colors">
+                <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold">
+                            {{ helmet.worker_name[0] }}
+                        </div>
+                        <span class="font-bold text-gray-800">{{ helmet.worker_name }}</span>
+                    </div>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="px-2 py-1 bg-red-100 text-red-600 rounded text-xs font-bold">{{ helmet.blood_group or
+                        'N/A' }}</span>
+                </td>
+                <td class="px-6 py-4">
+                    <p class="text-sm font-semibold text-gray-700">
+                        <i class="fas fa-phone-alt text-gray-400 mr-2"></i> {{ helmet.emergency_contact or 'Not Set' }}
+                    </p>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-500 font-mono">{{ helmet.helmet_id }}</td>
+                <td class="px-6 py-4 text-sm text-gray-600">{{ helmet.location }}</td>
+            </tr>
+            {% endfor %}
+            {% if not helmets %}
+            <tr>
+                <td colspan="5" class="py-12 text-center text-gray-400">No emergency data available.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-8 bg-red-600 text-white p-6 rounded-3xl shadow-xl flex items-center gap-6">
+    <div class="text-4xl"><i class="fas fa-shield-alt"></i></div>
+    <div>
+        <h4 class="font-bold text-lg">Standard Protocol</h4>
+        <p class="text-sm opacity-90">In case of Gas Alert (>650ppm), evacuate Zone immediately and contact site
+            supervisor via the numbers listed above.</p>
+    </div>
+</div>
+{% endblock %}

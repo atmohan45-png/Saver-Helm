@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block header %}Administrator Control Panel{% endblock %}
+{% block subheader %}Monitor all registered users and system usage{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="p-6 border-b border-gray-100 bg-gray-50">
+        <h3 class="font-bold text-gray-700">Registered Users</h3>
+    </div>
+    <table class="w-full text-left">
+        <thead class="bg-gray-50 border-b border-gray-100">
+            <tr>
+                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">User Info</th>
+                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Email</th>
+                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Role</th>
+                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Helmets Owned</th>
+                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+            {% for user in users %}
+            <tr class="hover:bg-slate-50/50 transition-colors">
+                <td class="px-6 py-4 flex items-center gap-3">
+                    <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) if user.profile_pic != 'default_profile.png' else 'https://ui-avatars.com/api/?name=' + user.username + '&background=random' }}"
+                        class="w-10 h-10 rounded-full object-cover">
+                    <span class="font-bold text-gray-800">{{ user.username }}</span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-600">{{ user.email }}</td>
+                <td class="px-6 py-4">
+                    {% if user.is_admin %}
+                    <span
+                        class="px-2 py-1 bg-purple-100 text-purple-600 rounded-full text-xs font-bold font-mono">ADMIN</span>
+                    {% else %}
+                    <span
+                        class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-bold font-mono">USER</span>
+                    {% endif %}
+                </td>
+                <td class="px-6 py-4">
+                    <div class="flex flex-wrap gap-1">
+                        {% for helmet in user.helmets %}
+                        <span
+                            class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-[10px] font-bold border border-gray-200">
+                            {{ helmet.helmet_id }}
+                        </span>
+                        {% endfor %}
+                        {% if not user.helmets.count() %}
+                        <span class="text-xs text-gray-400 italic">None</span>
+                        {% endif %}
+                    </div>
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <div class="flex justify-end gap-2">
+                        <a href="{{ url_for('main.admin_edit_user', user_id=user.id) }}"
+                            class="text-blue-600 hover:text-blue-800 text-xs font-bold uppercase tracking-widest bg-blue-50 px-3 py-2 rounded-lg transition-all">
+                            Edit
+                        </a>
+                        <button
+                            onclick='confirmDelete("{{ url_for("main.admin_delete_user", user_id=user.id) }}", "Delete Worker?", "Permanently remove this worker account and all their registered helmets?")'
+                            class="text-red-600 hover:text-red-800 text-xs font-bold uppercase tracking-widest bg-red-50 px-3 py-2 rounded-lg transition-all">
+                            Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block header %}Device Management{% endblock %}
+{% block subheader %}Add, edit, or remove safety monitoring devices{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-1">
+        <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 sticky top-8">
+            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <i class="fas fa-plus-circle text-blue-500"></i> New Device
+            </h3>
+
+            <form method="POST">
+                <input type="hidden" name="action" value="add">
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 block">Helmet ID
+                            (Unique)</label>
+                        <input type="text" name="helmet_id" placeholder="H001"
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                            required>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 block">Display
+                            Name</label>
+                        <input type="text" name="helmet_name" placeholder="North Wing-A"
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                            required>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 block">Assigned
+                            Worker</label>
+                        <input type="text" name="worker_name" placeholder="John Doe"
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                            required>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 block">Deployment
+                            Zone</label>
+                        <input type="text" name="location" placeholder="Construction Site 2"
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                            required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 block">Blood
+                                Group</label>
+                            <input type="text" name="blood_group" placeholder="O+"
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 block">Emerg.
+                                Contact</label>
+                            <input type="tel" name="emergency_contact" placeholder="+1234..."
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                        </div>
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-100 transition-all transform active:scale-95">
+                        Register Device
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-gray-50 border-b border-gray-100">
+                    <tr>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Device Info</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Worker</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Location</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">
+                            Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for helmet in helmets %}
+                    <tr class="hover:bg-slate-50/50 transition-colors">
+                        <td class="px-6 py-4">
+                            <p class="font-bold text-gray-800">{{ helmet.helmet_name }}</p>
+                            <p class="text-xs text-gray-400">{{ helmet.helmet_id }}</p>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600">{{ helmet.worker_name }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">{{ helmet.location }}</td>
+                        <td class="px-6 py-4 text-right">
+                            <form method="POST" class="inline"
+                                onsubmit="return confirm('Are you sure you want to delete this device?')">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="helmet_id" value="{{ helmet.helmet_id }}">
+                                <button type="submit" class="text-red-400 hover:text-red-600 p-2 transition-colors">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if not helmets %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-12 text-center text-gray-400">
+                            No devices registered. Use the form on the left to add one.
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
